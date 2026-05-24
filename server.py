@@ -1,11 +1,9 @@
 import os
 from flask import Flask, request, jsonify
-from flask_cors import CORS
 from supabase import create_client
 import requests
 
 app = Flask(__name__)
-CORS(app)
 
 SUPABASE_URL         = 'https://dtcrxnxhpwhmlciolkrr.supabase.co'
 SUPABASE_SERVICE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0Y3J4bnhocHdobWxjaW9sa3JyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjAzNzc4OCwiZXhwIjoyMDg3NjEzNzg4fQ.NiHRDE6ZSoHWIiS5AKwS4Xc7LbQ8gm4ODpEaZImNY8o"
@@ -25,12 +23,22 @@ DELIVERIES = {
    'Ps99 mail':           'YOUR PS99 MAIL SCRIPT OR LINK HERE',
 }
 
+@app.after_request
+def add_cors(response):
+   response.headers['Access-Control-Allow-Origin'] = '*'
+   response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+   response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+   return response
+
 @app.route('/')
 def index():
    return 'hann api running'
 
-@app.route('/api/create-order', methods=['POST'])
+@app.route('/api/create-order', methods=['POST', 'OPTIONS'])
 def create_order():
+   if request.method == 'OPTIONS':
+       return jsonify({'ok': True}), 200
+
    body           = request.get_json()
    product_name   = body.get('product_name')
    price          = body.get('price')
