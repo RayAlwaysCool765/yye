@@ -1,4 +1,3 @@
 flask
-Flask-Cors
 supabase
 requests
