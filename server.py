@@ -37,7 +37,7 @@ def index():
 @app.route('/api/create-order', methods=['POST', 'OPTIONS'])
 def create_order():
    if request.method == 'OPTIONS':
-       return jsonify({'ok': True}), 200
+       return '', 204
 
    body           = request.get_json()
    product_name   = body.get('product_name')
@@ -91,8 +91,11 @@ def create_order():
        'invoice_url': invoice['invoice_url']
    })
 
-@app.route('/api/webhook', methods=['POST'])
+@app.route('/api/webhook', methods=['POST', 'OPTIONS'])
 def nowpayments_webhook():
+   if request.method == 'OPTIONS':
+       return '', 204
+
    data           = request.get_json()
    order_id       = data.get('order_id')
    payment_status = data.get('payment_status')
@@ -116,4 +119,4 @@ def nowpayments_webhook():
    return jsonify({'ok': True}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 3000)))
+   app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
